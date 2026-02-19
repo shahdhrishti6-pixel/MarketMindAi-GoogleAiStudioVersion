@@ -6,12 +6,17 @@ import Dashboard from './components/Dashboard';
 import Templates from './components/Templates';
 import Insights from './components/Insights';
 import AICenter from './components/AICenter';
+import CreativeStudio from './components/CreativeStudio';
+import VideoLab from './components/VideoLab';
+import LiveConsultant from './components/LiveConsultant';
+import Assistant from './components/Assistant';
+import GlobalAssistant from './components/GlobalAssistant';
 import About from './components/About';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import Auth from './components/Auth';
 
-export type Page = 'home' | 'tools' | 'templates' | 'insights' | 'ai-center' | 'about' | 'contact';
+export type Page = 'home' | 'tools' | 'templates' | 'insights' | 'ai-center' | 'creative-studio' | 'video-lab' | 'live-consultant' | 'assistant' | 'about' | 'contact';
 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<Page>('home');
@@ -42,17 +47,25 @@ const App: React.FC = () => {
         return (
           <>
             <Hero onNavigate={setCurrentPage} />
-            <Dashboard />
+            <Dashboard onNavigate={setCurrentPage} />
           </>
         );
       case 'tools':
-        return <Dashboard />;
+        return <Dashboard onNavigate={setCurrentPage} />;
       case 'templates':
         return <Templates />;
       case 'insights':
         return <Insights />;
       case 'ai-center':
         return <AICenter />;
+      case 'creative-studio':
+        return <CreativeStudio />;
+      case 'video-lab':
+        return <VideoLab />;
+      case 'live-consultant':
+        return <LiveConsultant />;
+      case 'assistant':
+        return <Assistant />;
       case 'about':
         return <About />;
       case 'contact':
@@ -67,11 +80,12 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col selection:bg-[#00A8E8] selection:text-white">
+    <div className="min-h-screen flex flex-col selection:bg-[#8B5CF6] selection:text-white">
       <Navbar currentPage={currentPage} onNavigate={setCurrentPage} onLogout={handleLogout} />
       <main className="flex-grow pt-20">
         {renderPage()}
       </main>
+      <GlobalAssistant />
       <Footer onNavigate={setCurrentPage} />
     </div>
   );

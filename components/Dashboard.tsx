@@ -2,71 +2,84 @@
 import React, { useState } from 'react';
 import { 
   Type, Video, Camera, BarChart3, Calendar, 
-  Target, Mail, Hash, ChevronRight, Wand2, X, Loader2, Sparkles, Copy, Check
+  Target, Mail, Hash, ChevronRight, Wand2, X, Loader2, Sparkles, Copy, Check,
+  Palette, Film, MessageSquare, Zap, Globe, Bot
 } from 'lucide-react';
 import { MarketingTool } from '../types';
 import { generateMarketingContent } from '../services/gemini';
+import { Page } from '../App';
+
+interface DashboardProps {
+  onNavigate?: (page: Page) => void;
+}
 
 const tools: MarketingTool[] = [
+  {
+    id: 'assistant',
+    title: 'AI Chat Assistant',
+    description: 'Free chatbot with Zapier integration. Ideal for lead capture and quick support.',
+    icon: <Bot className="w-6 h-6 text-[#8B5CF6]" />,
+    category: 'Automation'
+  },
+  {
+    id: 'insights',
+    title: 'Market Intelligence',
+    description: 'NEW: Research live trends and competitor data grounded by Google Search.',
+    icon: <Globe className="w-6 h-6 text-[#8B5CF6]" />,
+    category: 'Research'
+  },
+  {
+    id: 'video-lab',
+    title: 'AI Video Lab',
+    description: 'Generate high-impact marketing videos and reels with the Veo 3.1 engine.',
+    icon: <Film className="w-6 h-6 text-[#7C3AED]" />,
+    category: 'Video'
+  },
+  {
+    id: 'live-consultant',
+    title: 'Live AI Consultant',
+    description: 'Real-time voice strategy sessions with a virtual digital marketing expert.',
+    icon: <MessageSquare className="w-6 h-6 text-[#8B5CF6]" />,
+    category: 'Consulting'
+  },
+  {
+    id: 'creative-studio',
+    title: 'AI Creative Studio',
+    description: 'Generate studio-quality ad images and visuals for your brand instantly.',
+    icon: <Palette className="w-6 h-6 text-[#7C3AED]" />,
+    category: 'Visual'
+  },
   {
     id: 'caption',
     title: 'AI Caption Generator',
     description: 'Hooks, CTAs, long captions, and ad copy tailored for high engagement.',
-    icon: <Type className="w-6 h-6 text-[#00A8E8]" />,
+    icon: <Type className="w-6 h-6 text-[#8B5CF6]" />,
     category: 'Copy'
-  },
-  {
-    id: 'reel',
-    title: 'Reel Script Generator',
-    description: 'Short-form scripts based on platform and objective with pacing cues.',
-    icon: <Video className="w-6 h-6 text-[#0084FF]" />,
-    category: 'Video'
   },
   {
     id: 'adfix',
     title: 'Fix My Ad Tool',
     description: 'Improve headlines, copy, creative suggestions and CTA options instantly.',
-    icon: <Camera className="w-6 h-6 text-[#00A8E8]" />,
+    icon: <Camera className="w-6 h-6 text-[#7C3AED]" />,
     category: 'Ads'
   },
   {
     id: '6m',
     title: "6M's Campaign Builder",
     description: 'Generate Market, Mission, Message, Media, Money, and Measurement.',
-    icon: <BarChart3 className="w-6 h-6 text-[#0084FF]" />,
+    icon: <BarChart3 className="w-6 h-6 text-[#8B5CF6]" />,
     category: 'Strategy'
   },
   {
     id: 'calendar',
     title: '30-Day Content Calendar',
     description: 'A full month of strategic content mapped out for your brand niche.',
-    icon: <Calendar className="w-6 h-6 text-[#00A8E8]" />,
+    icon: <Calendar className="w-6 h-6 text-[#7C3AED]" />,
     category: 'Management'
-  },
-  {
-    id: 'stp',
-    title: 'Brand Positioning Tool',
-    description: 'Define your Segmentation, Targeting, and Positioning (STP Framework).',
-    icon: <Target className="w-6 h-6 text-[#0084FF]" />,
-    category: 'Strategy'
-  },
-  {
-    id: 'outreach',
-    title: 'Influencer Outreach Maker',
-    description: 'Personalized templates that convert for creators and brand collabs.',
-    icon: <Mail className="w-6 h-6 text-[#00A8E8]" />,
-    category: 'Relations'
-  },
-  {
-    id: 'hashtags',
-    title: 'Hashtag Grouping Tool',
-    description: 'Smart categorizing of high-reach hashtags for your specific content.',
-    icon: <Hash className="w-6 h-6 text-[#0084FF]" />,
-    category: 'Social'
   }
 ];
 
-const Dashboard: React.FC = () => {
+const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
   const [activeTool, setActiveTool] = useState<MarketingTool | null>(null);
   const [inputValue, setInputValue] = useState('');
   const [result, setResult] = useState('');
@@ -74,6 +87,26 @@ const Dashboard: React.FC = () => {
   const [isCopied, setIsCopied] = useState(false);
 
   const handleLaunch = (tool: MarketingTool) => {
+    if (tool.id === 'creative-studio' && onNavigate) {
+      onNavigate('creative-studio');
+      return;
+    }
+    if (tool.id === 'video-lab' && onNavigate) {
+      onNavigate('video-lab');
+      return;
+    }
+    if (tool.id === 'live-consultant' && onNavigate) {
+      onNavigate('live-consultant');
+      return;
+    }
+    if (tool.id === 'insights' && onNavigate) {
+      onNavigate('insights');
+      return;
+    }
+    if (tool.id === 'assistant' && onNavigate) {
+      onNavigate('assistant');
+      return;
+    }
     setActiveTool(tool);
     setResult('');
     setInputValue('');
@@ -112,8 +145,21 @@ const Dashboard: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
           <div>
-            <h2 className="text-3xl font-black text-black mb-2">Marketing Tools Dashboard</h2>
-            <p className="text-gray-500">Powerful AI tools to automate your marketing workflow.</p>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-100 text-[#4B0082] text-[8px] font-black uppercase tracking-widest border border-violet-200">
+                <Zap className="w-3 h-3" />
+                Marketing Suite v2.5
+              </div>
+              <button 
+                onClick={() => onNavigate?.('assistant')}
+                className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white text-gray-500 text-[8px] font-black uppercase tracking-widest border border-gray-200 hover:bg-violet-50 hover:text-[#4B0082] transition-all group"
+              >
+                <Bot className="w-3 h-3 group-hover:animate-bounce" />
+                Quick AI Chat
+              </button>
+            </div>
+            <h2 className="text-4xl font-black text-black mb-2 tracking-tight">Tools Workspace</h2>
+            <p className="text-gray-500 font-medium">Streamline your campaign creation with multimodal AI tools.</p>
           </div>
         </div>
 
@@ -122,22 +168,28 @@ const Dashboard: React.FC = () => {
             <div 
               key={tool.id} 
               onClick={() => handleLaunch(tool)}
-              className="bg-white p-8 rounded-[2rem] border border-gray-100 hover:border-[#00A8E8]/30 transition-all group hover:shadow-2xl hover:shadow-[#00A8E8]/5 cursor-pointer relative overflow-hidden"
+              className="bg-white p-8 rounded-[2.5rem] border border-gray-100 hover:border-[#8B5CF6]/30 transition-all group hover:shadow-2xl hover:shadow-[#8B5CF6]/5 cursor-pointer relative overflow-hidden"
             >
+              {(tool.id === 'video-lab' || tool.id === 'live-consultant' || tool.id === 'insights' || tool.id === 'assistant') && (
+                <div className="absolute top-4 right-4 bg-violet-100 text-[#4B0082] px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest z-10 flex items-center gap-1">
+                  <span className="w-1 h-1 bg-[#4B0082] rounded-full animate-ping"></span>
+                  New
+                </div>
+              )}
               <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                <Wand2 className="w-4 h-4 text-[#00A8E8]" />
+                <Wand2 className="w-4 h-4 text-[#8B5CF6]" />
               </div>
               <div className="bg-gray-50 w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 {tool.icon}
               </div>
-              <h3 className="text-xl font-bold text-black mb-3 group-hover:text-[#0084FF] transition-colors">
+              <h3 className="text-lg font-black text-black mb-3 group-hover:text-[#8B5CF6] transition-colors leading-tight">
                 {tool.title}
               </h3>
-              <p className="text-gray-500 text-sm leading-relaxed mb-8">
+              <p className="text-gray-400 text-xs font-medium leading-relaxed mb-8">
                 {tool.description}
               </p>
-              <button className="flex items-center gap-1 text-sm font-bold text-black group-hover:gap-2 transition-all">
-                Launch Tool
+              <button className="flex items-center gap-1 text-[10px] font-black uppercase tracking-widest text-black group-hover:gap-2 transition-all">
+                Access Tool
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
@@ -156,7 +208,7 @@ const Dashboard: React.FC = () => {
                 </div>
                 <div>
                   <h3 className="text-2xl font-black text-black">{activeTool.title}</h3>
-                  <p className="text-gray-400 text-sm font-medium uppercase tracking-widest">{activeTool.category} Tool</p>
+                  <p className="text-gray-400 text-xs font-black uppercase tracking-widest">{activeTool.category} Framework</p>
                 </div>
               </div>
               <button 
@@ -171,50 +223,50 @@ const Dashboard: React.FC = () => {
               {!result && !isLoading ? (
                 <div className="space-y-6">
                   <div className="space-y-2">
-                    <label className="text-xs font-black text-gray-400 uppercase tracking-widest">Brand Details / Objective / Prompt</label>
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4">Campaign Context / Objective</label>
                     <textarea 
                       value={inputValue}
                       onChange={(e) => setInputValue(e.target.value)}
-                      placeholder="Enter specific details about your brand or the content you need..."
-                      className="w-full bg-gray-50 border-2 border-transparent focus:border-[#00A8E8] rounded-3xl p-6 text-lg min-h-[150px] outline-none transition-all placeholder:text-gray-300"
+                      placeholder="Enter specific details about your brand, audience, or the campaign you're building..."
+                      className="w-full bg-gray-50 border-2 border-transparent focus:border-[#8B5CF6] rounded-3xl p-6 text-lg min-h-[150px] outline-none transition-all placeholder:text-gray-300"
                     />
                   </div>
                   <button 
                     onClick={handleRunTool}
                     disabled={!inputValue}
-                    className="w-full py-5 bg-black text-white rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-gray-800 disabled:opacity-50 transition-all transform active:scale-95"
+                    className="w-full py-5 bg-[#4B0082] text-white rounded-2xl font-black flex items-center justify-center gap-3 hover:bg-[#2D004B] disabled:opacity-50 transition-all transform active:scale-95"
                   >
-                    Generate AI Insight
-                    <Sparkles className="w-5 h-5 text-[#00A8E8]" />
+                    Synthesize Result
+                    <Sparkles className="w-5 h-5 text-violet-300" />
                   </button>
                 </div>
               ) : isLoading ? (
                 <div className="flex flex-col items-center justify-center py-20 text-center space-y-6">
                   <div className="relative">
-                    <Loader2 className="w-16 h-16 text-[#00A8E8] animate-spin" />
-                    <Sparkles className="w-6 h-6 text-[#0084FF] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+                    <Loader2 className="w-16 h-16 text-[#8B5CF6] animate-spin" />
+                    <Sparkles className="w-6 h-6 text-[#7C3AED] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
                   </div>
                   <div>
-                    <h4 className="text-xl font-bold">MarketMind AI is processing...</h4>
-                    <p className="text-gray-400">Synthesizing professional marketing strategies.</p>
+                    <h4 className="text-xl font-bold">MarketMind Intelligence Active</h4>
+                    <p className="text-gray-400 text-sm">Crafting professional marketing assets based on your prompt.</p>
                   </div>
                 </div>
               ) : (
                 <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
-                  <div className="flex justify-between items-center bg-blue-50 p-4 rounded-2xl border border-blue-100">
-                    <span className="text-sm font-bold text-[#0084FF] flex items-center gap-2">
+                  <div className="flex justify-between items-center bg-violet-50 p-4 rounded-2xl border border-violet-100">
+                    <span className="text-[10px] font-black text-[#8B5CF6] flex items-center gap-2 uppercase tracking-widest">
                       <Sparkles className="w-4 h-4" />
-                      Generated with Intelligence
+                      AI Intelligence Output
                     </span>
                     <button 
                       onClick={copyToClipboard}
-                      className="flex items-center gap-2 px-4 py-2 bg-white text-black rounded-xl text-sm font-bold shadow-sm hover:bg-gray-50 transition-all"
+                      className="flex items-center gap-2 px-4 py-2 bg-white text-black rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm hover:bg-gray-50 transition-all"
                     >
-                      {isCopied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                      {isCopied ? <Check className="w-3 h-3 text-green-500" /> : <Copy className="w-3 h-3" />}
                       {isCopied ? 'Copied' : 'Copy'}
                     </button>
                   </div>
-                  <div className="prose prose-lg max-w-none text-gray-700 whitespace-pre-wrap leading-relaxed font-medium pb-10">
+                  <div className="prose prose-lg max-w-none text-gray-700 whitespace-pre-wrap leading-relaxed font-medium pb-10 bg-gray-50 p-8 rounded-[2rem] border border-gray-100">
                     {result}
                   </div>
                 </div>
@@ -225,15 +277,15 @@ const Dashboard: React.FC = () => {
               <div className="p-8 border-t border-gray-100 bg-gray-50 flex gap-4">
                 <button 
                   onClick={() => setResult('')}
-                  className="flex-grow py-4 border-2 border-gray-200 text-gray-600 rounded-2xl font-bold hover:bg-gray-100 transition-all"
+                  className="flex-grow py-4 border-2 border-gray-200 text-gray-600 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-gray-100 transition-all"
                 >
                   Regenerate
                 </button>
                 <button 
                   onClick={() => setActiveTool(null)}
-                  className="flex-grow py-4 bg-black text-white rounded-2xl font-bold hover:bg-gray-800 transition-all"
+                  className="flex-grow py-4 bg-black text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-gray-800 transition-all"
                 >
-                  Done
+                  Confirm & Close
                 </button>
               </div>
             )}

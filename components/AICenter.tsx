@@ -32,8 +32,8 @@ const AICenter: React.FC = () => {
     <section className="bg-white py-20 min-h-screen">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <div className="inline-flex p-3 bg-blue-50 rounded-2xl mb-6">
-            <Sparkles className="w-8 h-8 text-[#00A8E8]" />
+          <div className="inline-flex p-3 bg-violet-50 rounded-2xl mb-6">
+            <Sparkles className="w-8 h-8 text-[#8B5CF6]" />
           </div>
           <h1 className="text-4xl md:text-5xl font-black text-black mb-4">AI Command Center</h1>
           <p className="text-gray-500 max-w-2xl mx-auto">Your portal to infinite marketing creativity. Select a blueprint and let the AI build your campaign.</p>
@@ -53,10 +53,10 @@ const AICenter: React.FC = () => {
                 className={`w-full flex items-center gap-4 p-5 rounded-3xl text-left transition-all border ${
                   activeTemplate.id === template.id 
                   ? 'bg-black text-white border-black shadow-xl shadow-black/10' 
-                  : 'bg-white text-gray-600 border-gray-100 hover:border-[#00A8E8]/30 hover:bg-gray-50'
+                  : 'bg-white text-gray-600 border-gray-100 hover:border-[#8B5CF6]/30 hover:bg-gray-50'
                 }`}
               >
-                <div className={`p-3 rounded-xl ${activeTemplate.id === template.id ? 'bg-[#00A8E8]/20 text-[#00A8E8]' : 'bg-gray-100'}`}>
+                <div className={`p-3 rounded-xl ${activeTemplate.id === template.id ? 'bg-[#8B5CF6]/20 text-[#8B5CF6]' : 'bg-gray-100'}`}>
                   {React.cloneElement(template.icon as React.ReactElement, { className: 'w-5 h-5' })}
                 </div>
                 <span className="font-bold">{template.title}</span>
@@ -78,7 +78,7 @@ const AICenter: React.FC = () => {
                 <button 
                   onClick={handleGenerate}
                   disabled={loading || !inputValue}
-                  className="flex items-center gap-2 px-8 py-4 bg-[#0084FF] text-white rounded-2xl font-bold hover:bg-[#0073e6] disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-105 active:scale-95 shadow-lg shadow-[#0084FF]/20"
+                  className="flex items-center gap-2 px-8 py-4 bg-[#7C3AED] text-white rounded-2xl font-bold hover:bg-[#6D28D9] disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-105 active:scale-95 shadow-lg shadow-[#7C3AED]/20"
                 >
                   {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
                   {loading ? 'Thinking...' : 'Generate Powerfully'}
@@ -91,7 +91,7 @@ const AICenter: React.FC = () => {
               <div className="bg-white border-2 border-gray-100 rounded-[3rem] p-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <div className="flex justify-between items-center mb-8 border-b border-gray-100 pb-6">
                   <h4 className="text-xl font-black flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-[#00A8E8]" />
+                    <Sparkles className="w-5 h-5 text-[#8B5CF6]" />
                     AI Intelligence Output
                   </h4>
                   <button onClick={() => setResult('')} className="text-gray-400 hover:text-black transition-colors">
@@ -115,15 +115,6 @@ const AICenter: React.FC = () => {
                     Export to PDF
                   </button>
                 </div>
-              </div>
-            )}
-            
-            {!result && !loading && (
-              <div className="border-2 border-dashed border-gray-100 rounded-[3rem] p-20 flex flex-col items-center justify-center text-center opacity-40">
-                <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-6">
-                  <Sparkles className="w-10 h-10 text-gray-300" />
-                </div>
-                <p className="font-bold text-gray-400">Your AI-generated marketing brilliance will appear here.</p>
               </div>
             )}
           </div>

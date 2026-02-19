@@ -1,5 +1,7 @@
 {
-  "name": "Copy of MarketMind AI-GOOGLE AI STUDIO",
+  "name": "MarketMind Ai",
   "description": "An all-in-one digital marketing platform offering AI-powered workflows, creative templates, and performance insights for modern marketers.",
-  "requestFramePermissions": []
+  "requestFramePermissions": [
+    "microphone"
+  ]
 }

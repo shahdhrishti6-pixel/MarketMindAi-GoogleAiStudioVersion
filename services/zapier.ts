@@ -16,7 +16,7 @@ export const sendToZapier = async (webhookUrl: string, payload: ZapierPayload): 
   if (!webhookUrl) return false;
 
   try {
-    const response = await fetch(webhookUrl, {
+    const response = await window.fetch(webhookUrl, {
       method: 'POST',
       mode: 'no-cors', // Standard for Zapier webhooks in browser contexts
       headers: {

@@ -73,8 +73,14 @@ const Assistant: React.FC = () => {
         timestamp: new Date()
       };
       setMessages(prev => [...prev, aiMessage]);
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      const aiMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        text: err?.message || "I'm sorry, I encountered an error. Please try again.",
+        sender: 'ai',
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, aiMessage]);
     } finally {
       setIsLoading(false);
     }

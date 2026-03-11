@@ -10,7 +10,8 @@ import {
   Check, 
   MessageCircle,
   Settings,
-  Link as LinkIcon
+  Link as LinkIcon,
+  Key
 } from 'lucide-react';
 import { generateMarketingContent } from '../services/gemini';
 import { sendToZapier } from '../services/zapier';
@@ -26,6 +27,29 @@ const GlobalAssistant: React.FC = () => {
   const [zapierUrl, setZapierUrl] = useState(() => localStorage.getItem('marketmind_zapier_url') || '');
   const [isSyncing, setIsSyncing] = useState(false);
   const [syncSuccess, setSyncSuccess] = useState(false);
+  const [hasKey, setHasKey] = useState<boolean>(true);
+
+  useEffect(() => {
+    checkKey();
+  }, []);
+
+  const checkKey = async () => {
+    try {
+      const selected = await (window as any).aistudio.hasSelectedApiKey();
+      setHasKey(selected);
+    } catch (e) {
+      console.error("Key check failed", e);
+    }
+  };
+
+  const handleSelectKey = async () => {
+    try {
+      await (window as any).aistudio.openSelectKey();
+      setHasKey(true);
+    } catch (e) {
+      console.error("Failed to open key selector", e);
+    }
+  };
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -46,6 +70,9 @@ const GlobalAssistant: React.FC = () => {
 
     try {
       const response = await generateMarketingContent(input);
+      if (response.includes("API Key is missing")) {
+        setHasKey(false);
+      }
       setMessages(prev => [...prev, { id: (Date.now() + 1).toString(), text: response, sender: 'ai' }]);
     } catch (err) {
       console.error(err);
@@ -104,6 +131,19 @@ const GlobalAssistant: React.FC = () => {
 
           {/* Messages Area */}
           <div className="flex-grow p-2.5 overflow-y-auto space-y-2.5 scrollbar-hide bg-gray-50/50 relative">
+            {!hasKey && (
+              <div className="absolute inset-0 z-30 bg-white/95 backdrop-blur-sm p-4 flex flex-col items-center justify-center text-center space-y-3">
+                <Key className="w-6 h-6 text-[#4B0082]" />
+                <h5 className="text-[10px] font-black uppercase tracking-widest text-[#2D004B]">API Key Required</h5>
+                <p className="text-[8px] text-gray-500 leading-relaxed">To use AI features, please select a valid API key from your Google Cloud project.</p>
+                <button 
+                  onClick={handleSelectKey}
+                  className="w-full py-2 bg-[#4B0082] text-white rounded-lg text-[8px] font-black uppercase tracking-widest hover:bg-black transition-colors"
+                >
+                  Select Key
+                </button>
+              </div>
+            )}
             {showZapierSettings ? (
               <div className="absolute inset-0 z-20 bg-white p-4 flex flex-col items-center justify-center text-center space-y-2">
                 <Zap className="w-3 h-3 text-yellow-500" />

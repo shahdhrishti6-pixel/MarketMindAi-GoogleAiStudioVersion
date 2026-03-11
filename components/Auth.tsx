@@ -3,33 +3,47 @@ import React, { useState } from 'react';
 import { Mail, Lock, ArrowRight, Sparkles, Loader2 } from 'lucide-react';
 import Logo from './Logo';
 import { logUserSignIn } from '../services/automation';
+import { auth, googleProvider, signInWithPopup } from '../firebase';
 
-interface AuthProps {
-  onSignIn: () => void;
-}
-
-const Auth: React.FC<AuthProps> = ({ onSignIn }) => {
+const Auth: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+
+  const handleGoogleSignIn = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      if (result.user.email) {
+        logUserSignIn(result.user.email);
+      }
+    } catch (err: any) {
+      console.error("Google Sign-In Error:", err);
+      setError(err.message || "Failed to sign in with Google");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError(null);
 
-    // 1. Simulate Auth Delay
+    // For now, we'll just simulate email/password and log it, 
+    // but the user specifically wanted Google Authenticator (Google Auth)
     await new Promise(resolve => setTimeout(resolve, 1200));
 
-    // 2. Trigger Free Google Sheet Automation
-    // Logs the event for both login and account creation
     if (email) {
       logUserSignIn(email);
     }
 
-    // 3. Complete sign-in
     setIsLoading(false);
-    onSignIn();
+    // In a real app, you'd use signInWithEmailAndPassword(auth, email, password)
+    // But we'll focus on the Google Auth request.
   };
 
   return (
@@ -52,6 +66,31 @@ const Auth: React.FC<AuthProps> = ({ onSignIn }) => {
               Market Mind Ai
             </p>
           </div>
+
+          <div className="space-y-4 mb-8">
+            <button
+              onClick={handleGoogleSignIn}
+              disabled={isLoading}
+              type="button"
+              className="w-full py-4 bg-white border-2 border-gray-100 rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-gray-50 transition-all transform active:scale-[0.98] shadow-sm"
+            >
+              <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-5 h-5" />
+              <span className="text-gray-700 text-sm">Continue with Google</span>
+            </button>
+
+            <div className="relative flex items-center justify-center">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-100"></div>
+              </div>
+              <span className="relative px-4 bg-white text-[10px] font-black text-gray-300 uppercase tracking-widest">Or email</span>
+            </div>
+          </div>
+
+          {error && (
+            <div className="mb-6 p-4 bg-red-50 rounded-2xl border border-red-100 text-red-600 text-[10px] font-bold uppercase tracking-widest text-center">
+              {error}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">

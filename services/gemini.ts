@@ -3,7 +3,7 @@ import { GoogleGenAI } from "@google/genai";
 
 export const generateMarketingContent = async (prompt: string): Promise<string> => {
   if (!process.env.API_KEY) {
-    return "API Key is missing. Please ensure your environment is configured.";
+    return "API Key is missing. Please click the Key icon in the top navigation bar to select your Google Cloud project API key.";
   }
 
   try {
@@ -30,7 +30,9 @@ export interface MarketResearchResult {
 }
 
 export const researchMarketTrends = async (query: string): Promise<MarketResearchResult | null> => {
-  if (!process.env.API_KEY) return null;
+  if (!process.env.API_KEY) {
+    throw new Error("API Key is missing. Please select your API key using the Key icon in the navigation bar.");
+  }
 
   try {
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
@@ -66,7 +68,9 @@ export interface ImageGenerationOptions {
 }
 
 export const generateAdImage = async (options: ImageGenerationOptions): Promise<string | null> => {
-  if (!process.env.API_KEY) return null;
+  if (!process.env.API_KEY) {
+    throw new Error("API Key is missing. Please select your API key using the Key icon in the navigation bar.");
+  }
 
   try {
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
@@ -94,7 +98,9 @@ export interface VideoGenerationOptions {
 }
 
 export const generateAdVideo = async (options: VideoGenerationOptions, onProgress?: (status: string) => void): Promise<string | null> => {
-  if (!process.env.API_KEY) return null;
+  if (!process.env.API_KEY) {
+    throw new Error("API Key is missing. Please select your API key using the Key icon in the navigation bar.");
+  }
 
   try {
     // Guidelines: Create a new GoogleGenAI instance right before making an API call 
@@ -121,7 +127,7 @@ export const generateAdVideo = async (options: VideoGenerationOptions, onProgres
     const downloadLink = operation.response?.generatedVideos?.[0]?.video?.uri;
     if (!downloadLink) return null;
 
-    const response = await fetch(`${downloadLink}&key=${process.env.API_KEY}`);
+    const response = await window.fetch(`${downloadLink}&key=${process.env.API_KEY}`);
     const blob = await response.blob();
     return URL.createObjectURL(blob);
   } catch (error: any) {

@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Menu, X, LogOut, Sparkles, Video, MessageSquare, Bot } from 'lucide-react';
+import { Menu, X, LogOut, Sparkles, Video, MessageSquare, Bot, Key } from 'lucide-react';
 import { Page } from '../App';
 import Logo from './Logo';
 
@@ -57,6 +57,19 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate, onLogout }) =>
               </button>
             ))}
             <div className="h-6 w-[1px] bg-gray-100 mx-2"></div>
+            <button
+              onClick={async () => {
+                try {
+                  await (window as any).aistudio.openSelectKey();
+                } catch (e) {
+                  console.error("Failed to open key selector", e);
+                }
+              }}
+              className="p-2 text-gray-400 hover:text-indigo-600 transition-colors"
+              title="Select API Key"
+            >
+              <Key className="w-5 h-5" />
+            </button>
             <button
               onClick={onLogout}
               className="p-2 text-gray-400 hover:text-red-500 transition-colors"

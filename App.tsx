@@ -15,30 +15,30 @@ import About from './components/About';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import Auth from './components/Auth';
+import { auth, onAuthStateChanged, signOut } from './firebase';
 
 export type Page = 'home' | 'tools' | 'templates' | 'insights' | 'ai-center' | 'creative-studio' | 'video-lab' | 'live-consultant' | 'assistant' | 'about' | 'contact';
 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<Page>('home');
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isAuthReady, setIsAuthReady] = useState<boolean>(false);
 
-  // Check if already "logged in" for the session
   useEffect(() => {
-    const authStatus = localStorage.getItem('marketmind_auth');
-    if (authStatus === 'true') {
-      setIsAuthenticated(true);
-    }
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsAuthenticated(!!user);
+      setIsAuthReady(true);
+    });
+    return () => unsubscribe();
   }, []);
 
-  const handleSignIn = () => {
-    setIsAuthenticated(true);
-    localStorage.setItem('marketmind_auth', 'true');
-  };
-
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-    localStorage.removeItem('marketmind_auth');
-    setCurrentPage('home');
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      setCurrentPage('home');
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
   };
 
   const renderPage = () => {
@@ -75,8 +75,19 @@ const App: React.FC = () => {
     }
   };
 
+  if (!isAuthReady) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-white gap-4">
+        <div className="w-12 h-12 border-4 border-violet-100 border-t-[#8B5CF6] rounded-full animate-spin"></div>
+        <p className="text-gray-400 text-[10px] font-black uppercase tracking-[0.2em] animate-pulse">
+          Initializing MarketMind AI...
+        </p>
+      </div>
+    );
+  }
+
   if (!isAuthenticated) {
-    return <Auth onSignIn={handleSignIn} />;
+    return <Auth />;
   }
 
   return (

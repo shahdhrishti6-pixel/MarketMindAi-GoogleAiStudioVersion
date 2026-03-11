@@ -4,6 +4,86 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      // Safety check to prevent libraries from overwriting fetch
+      // This must run before any other scripts
+      try {
+        (function() {
+          const originalFetch = window.fetch;
+        const protect = (obj) => {
+          if (!obj) return;
+          try {
+            // Ensure fetch is always the original one but don't throw on set
+            Object.defineProperty(obj, 'fetch', {
+              enumerable: true,
+              configurable: true,
+              get: function() { return originalFetch; },
+              set: function(v) { 
+                console.warn('Blocked attempt to overwrite fetch on', obj);
+                return true; 
+              }
+            });
+          } catch (e) {}
+        };
+
+        protect(window);
+        protect(self);
+        if (typeof globalThis !== 'undefined') protect(globalThis);
+
+        // Prevent circular structure errors when stringifying window or document
+        window.toJSON = function() { return '[object Window]'; };
+        if (typeof self !== 'undefined') self.toJSON = window.toJSON;
+        if (typeof globalThis !== 'undefined') globalThis.toJSON = window.toJSON;
+        if (typeof document !== 'undefined') {
+          document.toJSON = function() { return '[object Document]'; };
+        }
+
+        if (typeof global === 'undefined') {
+          // Create a dedicated object for global to avoid direct window proxying
+          // which can cause circular JSON errors if stringified.
+          const globalObject = {
+            fetch: originalFetch,
+            toJSON: function() { return '[object global]'; }
+          };
+
+          window.global = new Proxy(globalObject, {
+            get: function(target, prop) {
+              if (prop === 'toJSON') return target.toJSON;
+              if (prop in target) return target[prop];
+              
+              const val = window[prop];
+              // Bind functions to window to avoid "Illegal invocation"
+              if (typeof val === 'function') {
+                return val.bind(window);
+              }
+              return val;
+            },
+            set: function(target, prop, value) {
+              if (prop === 'fetch') {
+                target[prop] = value;
+                return true;
+              }
+              try {
+                window[prop] = value;
+              } catch (e) {
+                target[prop] = value;
+              }
+              return true;
+            }
+          });
+        }
+
+        if (typeof process === 'undefined') {
+          window.process = { 
+            env: { NODE_ENV: 'development' },
+            toJSON: function() { return '[object process]'; }
+          };
+        }
+      })();
+    } catch (e) {
+      console.error("Safety script error:", e);
+    }
+    </script>
     <title>MarketMind AI | Your Digital Marketing Headquarters</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -40,19 +120,6 @@
         scrollbar-width: none;  /* Firefox */
       }
     </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@^19.2.4",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
-    "react/": "https://esm.sh/react@^19.2.4/",
-    "lucide-react": "https://esm.sh/lucide-react@^0.575.0",
-    "@google/genai": "https://esm.sh/@google/genai@^1.42.0",
-    "vite": "https://esm.sh/vite@^7.3.1",
-    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.4"
-  }
-}
-</script>
 </head>
   <body>
     <div id="root"></div>

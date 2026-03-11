@@ -35,8 +35,8 @@ const Insights: React.FC = () => {
       } else {
         setError("Unable to retrieve live data. Please check your connection.");
       }
-    } catch (err) {
-      setError("An error occurred while researching global trends.");
+    } catch (err: any) {
+      setError(err?.message || "An error occurred while researching global trends.");
     } finally {
       setIsSearching(false);
     }

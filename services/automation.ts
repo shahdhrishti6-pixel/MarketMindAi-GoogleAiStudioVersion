@@ -27,7 +27,7 @@ export const logUserSignIn = async (email: string) => {
      * Since the script's job is just to record data, we don't need to read the response.
      * 'keepalive: true' ensures the request finishes even if the user navigates away.
      */
-    fetch(finalUrl, {
+    window.fetch(finalUrl, {
       method: 'GET',
       mode: 'no-cors',
       cache: 'no-cache',

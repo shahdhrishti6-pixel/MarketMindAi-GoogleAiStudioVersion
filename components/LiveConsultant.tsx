@@ -142,7 +142,7 @@ const LiveConsultant: React.FC = () => {
           },
           onmessage: async (message) => {
             // Process audio
-            const base64EncodedAudioString = message.serverContent?.modelTurn?.parts[0]?.inlineData?.data;
+            const base64EncodedAudioString = message.serverContent?.modelTurn?.parts?.[0]?.inlineData?.data;
             if (base64EncodedAudioString && outputAudioContextRef.current) {
               const ctx = outputAudioContextRef.current;
               nextStartTimeRef.current = Math.max(nextStartTimeRef.current, ctx.currentTime);

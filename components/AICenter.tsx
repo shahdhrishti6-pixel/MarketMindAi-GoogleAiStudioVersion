@@ -22,10 +22,14 @@ const AICenter: React.FC = () => {
     setResult('');
     
     const fullPrompt = `${activeTemplate.prompt} ${inputValue}`;
-    const output = await generateMarketingContent(fullPrompt);
-    
-    setResult(output);
-    setLoading(false);
+    try {
+      const output = await generateMarketingContent(fullPrompt);
+      setResult(output);
+    } catch (err: any) {
+      setResult(err?.message || "An error occurred during generation.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -57,7 +61,7 @@ const AICenter: React.FC = () => {
                 }`}
               >
                 <div className={`p-3 rounded-xl ${activeTemplate.id === template.id ? 'bg-[#8B5CF6]/20 text-[#8B5CF6]' : 'bg-gray-100'}`}>
-                  {React.cloneElement(template.icon as React.ReactElement, { className: 'w-5 h-5' })}
+                  {React.cloneElement(template.icon as React.ReactElement<any>, { className: 'w-5 h-5' })}
                 </div>
                 <span className="font-bold">{template.title}</span>
               </button>
